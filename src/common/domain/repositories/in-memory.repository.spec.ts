@@ -121,33 +121,221 @@ describe('InMemoryRepository unit tests', () => {
 		})
 	})
 
-  describe('applyFilter', () => {
-    it('should no filter items when filter param is null', async () => {
-      const items = [model]
-      const spyFilterMethod = jest.spyOn(items, 'filter' as any)
-      const result = await sut['applyFilter'](items, null)
-      expect(spyFilterMethod).not.toHaveBeenCalled()
-      expect(result).toStrictEqual(items)
-    })
+	describe('applyFilter', () => {
+		it('should no filter items when filter param is null', async () => {
+			const items = [model]
+			const spyFilterMethod = jest.spyOn(items, 'filter' as any)
+			const result = await sut['applyFilter'](items, null)
+			expect(spyFilterMethod).not.toHaveBeenCalled()
+			expect(result).toStrictEqual(items)
+		})
 
-    it('should filter the data using filter param', async () => {
+		it('should filter the data using filter param', async () => {
+			const items = [
+				{ id: randomUUID(), name: 'test', price: 10, created_at, updated_at },
+				{ id: randomUUID(), name: 'TEST', price: 20, created_at, updated_at },
+				{ id: randomUUID(), name: 'fake', price: 30, created_at, updated_at },
+			]
+			const spyFilterMethod = jest.spyOn(items, 'filter' as any)
+			let result = await sut['applyFilter'](items, 'TEST')
+			expect(spyFilterMethod).toHaveBeenCalledTimes(1)
+			expect(result).toStrictEqual([items[0], items[1]])
+
+			result = await sut['applyFilter'](items, 'test')
+			expect(spyFilterMethod).toHaveBeenCalledTimes(2)
+			expect(result).toStrictEqual([items[0], items[1]])
+
+			result = await sut['applyFilter'](items, 'no-filter')
+			expect(spyFilterMethod).toHaveBeenCalledTimes(3)
+			expect(result).toHaveLength(0)
+		})
+	})
+
+	describe('applySort', () => {
+		it('should not sort items', async () => {
+			const items = [
+				{ id: randomUUID(), name: 'test', price: 10, created_at, updated_at },
+				{ id: randomUUID(), name: 'TEST', price: 20, created_at, updated_at },
+				{ id: randomUUID(), name: 'fake', price: 30, created_at, updated_at },
+			]
+			let result = await sut['applySort'](items, null, null)
+			expect(result).toStrictEqual(items)
+
+			result = await sut['applySort'](items, 'id', 'asc')
+			expect(result).toStrictEqual(items)
+		})
+
+		it('should sort items', async () => {
+			const items = [
+				{ id: randomUUID(), name: 'b', price: 10, created_at, updated_at },
+				{ id: randomUUID(), name: 'a', price: 20, created_at, updated_at },
+				{ id: randomUUID(), name: 'c', price: 30, created_at, updated_at },
+			]
+			let result = await sut['applySort'](items, 'name', 'desc')
+			expect(result).toStrictEqual([items[2], items[0], items[1]])
+
+			result = await sut['applySort'](items, 'name', 'asc')
+			expect(result).toStrictEqual([items[1], items[0], items[2]])
+		})
+	})
+
+  describe('applyPaginate', () => {
+    it('should paginate items', async () => {
       const items = [
-        { id: randomUUID(), name: 'test', price: 10, created_at, updated_at },
-        { id: randomUUID(), name: 'TEST', price: 20, created_at, updated_at },
-        { id: randomUUID(), name: 'fake', price: 30, created_at, updated_at },
+        { id: randomUUID(), name: 'a', price: 10, created_at, updated_at },
+        { id: randomUUID(), name: 'b', price: 20, created_at, updated_at },
+        { id: randomUUID(), name: 'c', price: 30, created_at, updated_at },
+        { id: randomUUID(), name: 'd', price: 20, created_at, updated_at },
+        { id: randomUUID(), name: 'e', price: 30, created_at, updated_at },
       ]
-      const spyFilterMethod = jest.spyOn(items, 'filter' as any)
-      let result = await sut['applyFilter'](items, 'TEST')
-      expect(spyFilterMethod).toHaveBeenCalledTimes(1)
+      let result = await sut['applyPaginate'](items, 1, 2)
       expect(result).toStrictEqual([items[0], items[1]])
 
-      result = await sut['applyFilter'](items, 'test')
-      expect(spyFilterMethod).toHaveBeenCalledTimes(2)
-      expect(result).toStrictEqual([items[0], items[1]])
+      result = await sut['applyPaginate'](items, 2, 2)
+      expect(result).toStrictEqual([items[2], items[3]])
 
-      result = await sut['applyFilter'](items, 'no-filter')
-      expect(spyFilterMethod).toHaveBeenCalledTimes(3)
-      expect(result).toHaveLength(0)
+      result = await sut['applyPaginate'](items, 2, 3)
+      expect(result).toStrictEqual([items[3], items[4]])
     })
   })
+ 
+  describe('search', () => {
+    /**
+     * Quando o método search não recebe nenhum parâmetro de busca personalizada, retorna o padrão 
+     * que é página 1, 15 itens por página, sem ordenação e sem filtro.
+     */
+    it('should paginate items', async () => {
+      const items = Array(16).fill(model)
+      sut.items = items
+      const result = await sut.search({})
+      expect(result).toStrictEqual({
+        items: Array(15).fill(model),
+        total: 16,
+        current_page: 1,
+        per_page: 15,
+        sort: null,
+        sort_dir: null,
+        filter: null,
+      })
+    })
+
+    it('should apply paginate and filter', async () => {
+      const items = [
+        { id: randomUUID(), name: 'test', price: 10, created_at, updated_at },
+        { id: randomUUID(), name: 'a', price: 20, created_at, updated_at },
+        { id: randomUUID(), name: 'TEST', price: 30, created_at, updated_at },
+        { id: randomUUID(), name: 'TeSt', price: 20, created_at, updated_at },
+      ]
+      sut.items = items
+      const result = await sut.search({
+        page: 1,
+        perPage: 2,
+        filter: 'test',
+      })
+      expect(result).toStrictEqual({
+        items: [items[0], items[2]],
+        total: 3,
+        current_page: 1,
+        per_page: 2,
+        sort: null,
+        sort_dir: null,
+        filter: 'test',
+      })
+    })
+
+    /**
+     * Quando o método search recebe os parâmetros de paginação e ordenação,
+     * aplica a paginação e ordenação corretamente.
+     */
+    it('should apply paginate and sort', async () => {
+      const items = [
+        { id: randomUUID(), name: 'b', price: 10, created_at, updated_at },
+        { id: randomUUID(), name: 'a', price: 20, created_at, updated_at },
+        { id: randomUUID(), name: 'd', price: 30, created_at, updated_at },
+        { id: randomUUID(), name: 'e', price: 20, created_at, updated_at },
+        { id: randomUUID(), name: 'c', price: 20, created_at, updated_at },
+      ]
+      sut.items = items
+      let result = await sut.search({
+        page: 1,
+        perPage: 2,
+        sort: 'name',
+        sort_dir: 'asc',
+      })
+      expect(result).toStrictEqual({
+        items: [items[1], items[0]],
+        total: 5,
+        current_page: 1,
+        per_page: 2,
+        sort: 'name',
+        sort_dir: 'asc',
+        filter: null,
+      })
+
+      result = await sut.search({
+        page: 2,
+        perPage: 2,
+        sort: 'name',
+        sort_dir: 'asc',
+      })
+      expect(result).toStrictEqual({
+        items: [items[4], items[2]],
+        total: 5,
+        current_page: 2,
+        per_page: 2,
+        sort: 'name',
+        sort_dir: 'asc',
+        filter: null,
+      })
+    })
+
+    /**
+     * Quando o método search recebe os parâmetros de paginação, ordenação e filtro,
+     * aplica a paginação, ordenação e filtro corretamente.
+     */
+    it('should search using filter, sort and paginate', async () => {
+      const items = [
+        { id: randomUUID(), name: 'TEST', price: 10, created_at, updated_at },
+        { id: randomUUID(), name: 'a', price: 20, created_at, updated_at },
+        { id: randomUUID(), name: 'test', price: 30, created_at, updated_at },
+        { id: randomUUID(), name: 'e', price: 20, created_at, updated_at },
+        { id: randomUUID(), name: 'TeSt', price: 20, created_at, updated_at },
+      ]
+      sut.items = items
+      let result = await sut.search({
+        page: 1,
+        perPage: 2,
+        sort: 'name',
+        sort_dir: 'asc',
+        filter: 'TEST',
+      })
+      expect(result).toStrictEqual({
+        items: [items[0], items[4]],
+        total: 3,
+        current_page: 1,
+        per_page: 2,
+        sort: 'name',
+        sort_dir: 'asc',
+        filter: 'TEST',
+      })
+
+      result = await sut.search({
+        page: 1,
+        perPage: 2,
+        sort: 'name',
+        sort_dir: 'desc',
+        filter: 'test',
+      })
+      expect(result).toStrictEqual({
+        items: [items[2], items[4]],
+        total: 3,
+        current_page: 1,
+        per_page: 2,
+        sort: 'name',
+        sort_dir: 'desc',
+        filter: 'test',
+      })
+    })
+  })
+
 })
