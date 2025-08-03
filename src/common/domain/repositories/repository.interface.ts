@@ -6,7 +6,7 @@ export type SearchInput = {
 	filter?: string | null
 }
 
-export type SearcheOutput<Model> = {
+export type SearchOutput<Model> = {
 	items: Model[]
 	per_page: number
 	current_page: number
@@ -25,5 +25,5 @@ export interface RepositoryInterface<Model, CreateProps> {
 	findById(id: string): Promise<Model>
 	delete(id: string): Promise<void>
 
-	search(props: SearchInput): Promise<SearcheOutput<Model>>
+	search(props: SearchInput): Promise<SearchOutput<Model>>
 }
