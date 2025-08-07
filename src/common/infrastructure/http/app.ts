@@ -5,17 +5,17 @@ import { errorHandler } from './middlewares/errorHandler';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
-const  options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'API documentation',
-      version: '1.0.0',
-      description: 'API de exemplo para o artigo de TDD',
-    },
-  },
-  apis: [],
-}
+const options = {
+	definition: {
+		openapi: '3.0.0',
+		info: {
+			title: 'API documentation',
+			version: '1.0.0',
+			description: 'API de exemplo para o artigo de TDD',
+		},
+	},
+	apis: [],
+};
 
 const swaggerSpec = swaggerJSDoc(options);
 
@@ -39,6 +39,3 @@ app.use(routes);
 app.use(errorHandler);
 
 export { app };
-
-
-
