@@ -73,7 +73,8 @@ export class ProductsTypeormRepository implements ProductsRepository {
 	async search(props: SearchInput): Promise<SearchOutput<ProductModel>> {
 		const validSort = this.sortableFields.includes(props.sort) || false;
 		const dirOps = ['asc', 'desc'];
-		const validSortDir = dirOps.includes(props.sort_dir.toLowerCase()) || false;
+		const validSortDir =
+			(props.sort_dir && dirOps.includes(props.sort_dir.toLowerCase())) || false;
 		const orderByField = validSort ? props.sort : 'created_at';
 		const orderByDir = validSortDir ? props.sort_dir : 'desc';
 
@@ -89,8 +90,8 @@ export class ProductsTypeormRepository implements ProductsRepository {
 			per_page: props.per_page,
 			total,
 			current_page: props.page,
-			sort: props.sort,
-			sort_dir: props.sort_dir,
+			sort: orderByField,
+			sort_dir: orderByDir,
 			filter: props.filter,
 		};
 	}
