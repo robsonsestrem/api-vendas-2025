@@ -1,29 +1,29 @@
 export type SearchInput = {
-	page?: number
-	perPage?: number
-	sort?: string | null
-	sort_dir?: string | null
-	filter?: string | null
-}
+	page?: number;
+	per_page?: number;
+	sort?: string | null;
+	sort_dir?: string | null;
+	filter?: string | null;
+};
 
 export type SearchOutput<Model> = {
-	items: Model[]
-	per_page: number
-	current_page: number
-	total: number
-	sort?: string | null
-	sort_dir?: string | null
-	filter?: string | null
-}
+	items: Model[];
+	per_page: number;
+	current_page: number;
+	total: number;
+	sort?: string | null;
+	sort_dir?: string | null;
+	filter?: string | null;
+};
 
 export interface RepositoryInterface<Model, CreateProps> {
-	create(props: CreateProps): Model
+	create(props: CreateProps): Model;
 
-	insert(model: Model): Promise<Model>
-	update(model: Model): Promise<Model>
+	insert(model: Model): Promise<Model>;
+	update(model: Model): Promise<Model>;
 
-	findById(id: string): Promise<Model>
-	delete(id: string): Promise<void>
+	findById(id: string): Promise<Model>;
+	delete(id: string): Promise<void>;
 
-	search(props: SearchInput): Promise<SearchOutput<Model>>
+	search(props: SearchInput): Promise<SearchOutput<Model>>;
 }
