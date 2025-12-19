@@ -14,7 +14,7 @@ const options = {
 			description: 'API de exemplo para o artigo de TDD',
 		},
 	},
-	apis: [],
+	apis: ['./src/**/http/routes/*.ts'],
 };
 
 const swaggerSpec = swaggerJSDoc(options);
