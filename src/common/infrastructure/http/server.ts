@@ -1,6 +1,7 @@
 import { env } from '../env';
 import { dataSource } from '../typeorm';
 import { app } from './app';
+import '@/common/infrastructure/container';
 
 // Instancia toda a configuração do servidor com postgres
 dataSource
