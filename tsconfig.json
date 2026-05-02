@@ -9,11 +9,12 @@
     "allowSyntheticDefaultImports": true,
     "target": "es2022",
     "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+    "rootDir": "./src",
+		"outDir": "./dist",
+		"paths": {
+		"@/*": ["./src/*"],        
+		"*": ["./src/*", "./*"]
+		},
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
