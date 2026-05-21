@@ -8,6 +8,7 @@ module.exports = {
   moduleNameMapper: {
     ...pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }),
   },
+  setupFiles: ['<rootDir>/jest-setup.ts'],
   testRegex: '.*\.(spec|test|int-spec)\.ts$',
   transform: {
     '^.+\.(t|j)s$': ['ts-jest', {
