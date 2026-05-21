@@ -1,5 +1,5 @@
 import { ProductsRepository } from '@/products/domain/repositories/products.repository';
-import { CreateProductUseCase } from './create-product.usecase';
+import { CreateProductUseCase } from '@/products/application/usecases/create-product.usecase';
 import { ProductsInMemoryRepository } from '@/products/infrastructure/in-memory/products-in-memory.repository';
 import { ConflictError } from '@/common/domain/errors/conflict-error';
 import { BadRequestError } from '@/common/domain/errors/bad-request-error';

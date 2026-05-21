@@ -1,5 +1,5 @@
 import { inject, injectable } from 'tsyringe';
-import { SearchInputDto } from '../dtos/search-input.dto';
+import { SearchInputDto } from '@/products/application/dtos/search-input.dto';
 import { ProductsRepository } from '@/products/domain/repositories/products.repository';
 import {
 	PaginationOutputDto,
