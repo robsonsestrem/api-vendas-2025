@@ -46,7 +46,7 @@ const usersRouter = Router()
  *         avatar: null
  *         created_at: 2023-01-01T10:00:00Z
  *         updated_at: 2023-01-01T10:00:00Z
- *    UserListResponse:
+ *     UserListResponse:
  *       type: object
  *       properties:
  *         items:
@@ -83,8 +83,8 @@ const usersRouter = Router()
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: The users managing API
+ *   - name: Users
+ *     description: The users managing API
  */
 
 /**
@@ -111,7 +111,6 @@ const usersRouter = Router()
  *       409:
  *         description: Email already used on another user
  */
-
 usersRouter.post('/', createUserController)
 
 /**
@@ -159,7 +158,6 @@ usersRouter.post('/', createUserController)
  *             schema:
  *               $ref: '#/components/schemas/UserListResponse'
  */
-
 usersRouter.get('/', searchUserController)
 
 export { usersRouter }
