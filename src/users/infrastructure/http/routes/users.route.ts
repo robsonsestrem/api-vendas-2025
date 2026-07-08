@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import { createUserController } from '@/users/infrastructure/http/controllers/create-user.controller'
 import { searchUserController } from '@/users/infrastructure/http/controllers/search-user.controller'
+import { updateAvatarController } from '@/users/infrastructure/http/controllers/update-avatar.controller'
 import { isAuthenticated } from '@/common/infrastructure/http/middlewares/isAuthenticated'
+import { upload } from '@/users/infrastructure/http/middlewares/uploadAvatar'
 
 const usersRouter = Router()
-
-usersRouter.use(isAuthenticated)
 
 /**
  * @swagger
@@ -86,8 +86,8 @@ usersRouter.use(isAuthenticated)
 /**
  * @swagger
  * tags:
- *   - name: Users
- *     description: The users managing API
+ *   name: Users
+ *   description: The users managing API
  */
 
 /**
@@ -161,6 +161,44 @@ usersRouter.post('/', createUserController)
  *             schema:
  *               $ref: '#/components/schemas/UserListResponse'
  */
-usersRouter.get('/', searchUserController)
+usersRouter.get('/', isAuthenticated, searchUserController)
+
+/**
+ * @swagger
+ * /users/avatar:
+ *   patch:
+ *     summary: Upload an image for a user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_id:
+ *                 type: string
+ *                 format: uuid
+ *                 description: The user id
+ *               file:
+ *                 type: file
+ *                 format: binary
+ *                 description: The image file to upload
+ *     responses:
+ *       200:
+ *         description: The image was successfully uploaded
+ *       400:
+ *         description: Bad request
+ *       404:
+ *         description: The user was not found
+ *       500:
+ *         description: Some server error
+ */
+usersRouter.patch(
+  '/avatar',
+  isAuthenticated,
+  upload.single('file'),
+  updateAvatarController,
+)
 
 export { usersRouter }
