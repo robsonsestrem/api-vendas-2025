@@ -1,4 +1,3 @@
-
 import { InvalidCredentialsError } from '@/common/domain/errors/invalid-credentials-error'
 import { HashProvider } from '@/common/domain/providers/hash-provider'
 import { inject, injectable } from 'tsyringe'
