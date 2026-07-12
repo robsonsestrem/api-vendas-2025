@@ -1,4 +1,5 @@
 import { dataValidation } from '@/common/infrastructure/validation/zod'
+import { sendMailToResetPassword } from '@/users/infrastructure/email/nodemailer/sendMailToResetPassword'
 import { SendEmailToResetPasswordUseCase } from '@/users/application/usecases/send-email-to-reset-password.usecase'
 import { Request, Response } from 'express'
 import { container } from 'tsyringe'
@@ -11,6 +12,7 @@ export async function sendEmailToResetPasswordController(
   const paramsSchema = z.object({
     email: z.string().email(),
   })
+
   const { email } = dataValidation(paramsSchema, request.body)
 
   const sendEmailToResetPasswordUseCase: SendEmailToResetPasswordUseCase.UseCase =
@@ -20,8 +22,8 @@ export async function sendEmailToResetPasswordController(
     email,
   })
 
-  // TODO: recurso para enviar email
-  console.log('user: ', user)
+  await sendMailToResetPassword({ user, token })
+  // console.log('user: ', user)
   console.log('token: ', token)
 
   return response.status(204).json()
