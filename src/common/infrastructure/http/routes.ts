@@ -2,6 +2,7 @@ import { productsRouter } from '@/products/infrastructure/http/routes/products.r
 import { authRouter } from '@/users/infrastructure/http/routes/auth.route';
 import { passwordRouter } from '@/users/infrastructure/http/routes/password.route';
 import { usersRouter } from '@/users/infrastructure/http/routes/users.route';
+import { customersRouter } from '@/customers/infrastructure/http/routes/customers.route';
 import { Router } from 'express';
 
 const routes = Router();
@@ -15,5 +16,6 @@ routes.use('/auth', authRouter);
 routes.use('/products', productsRouter);
 routes.use('/users', usersRouter);
 routes.use('/password', passwordRouter);
+routes.use('/customers', customersRouter);
 
 export { routes };
