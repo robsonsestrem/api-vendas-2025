@@ -1,39 +1,14 @@
-# compiled output
-/build
-/dist
-/node_modules
-
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# OS
-.DS_Store
-
-# Tests
-/coverage
-/.nyc_output
-
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
-application.yml
-
+.docker/dbdata
+.idea/
+.vscode/
+node_modules/
+build/
+temp/
 .env
-.env.development
-.env.test
-.env.local
-.env.example
-tsconfig.tsbuildinfo
+coverage
+ormconfig.json
+dist
+
+uploads/*
+!uploads/.gitkeep
+.DS_Store
