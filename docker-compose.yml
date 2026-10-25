@@ -9,9 +9,17 @@ services:
       - '3333:3333'
     volumes:
       - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: db
+      REDIS_HOST: redis
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   db:
     image: postgres:18-alpine
@@ -47,5 +55,12 @@ services:
       - PGADMIN_DEFAULT_PASSWORD=admin
     ports:
       - '8000:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
+volumes:
+  node_modules:
+  pgadmin_data:
