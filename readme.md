@@ -281,9 +281,4 @@ O resultado é um material de estudo que, embora fruto de aprendizado, procura s
 - [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
 
----
-
-**Licença:** MIT
-
-**Versão:** 1.0.0
 
